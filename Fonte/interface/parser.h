@@ -21,6 +21,11 @@ extern rc_insert GLOBAL_DATA;
  */
 extern rc_parser GLOBAL_PARSER;
 
+/*SELECT---------------Alteraçoes feitas------------------------------------------------*/
+extern rc_select GLOBAL_SELECT;
+/*SELECT---------------Alteraçoes feitas------------------------------------------------*/
+
+
 /* Funcções do yacc
  */
 int yyparse();
@@ -103,3 +108,22 @@ void clearGlobalStructs();
  * dos tokens iniciais.
  */
 void setMode(char mode);
+
+
+/*SELECT---------------Alteraçoes feitas------------------------------------------------*/
+void resetSelect();
+void setObjNameSelect(char **name);
+void setColumnProjection(char **name);
+void setPosition(int p);
+void addWhereCondition();
+void setCondition(int OP);
+void setOpLogic(int logic);
+void setColumnTest(char **name);
+void addValueTest(char *value);
+void addNewJoin(int type);
+void setColumnJoin(char **name);
+void setTableJoin(char **name);
+void setConditionJoin(int OP);
+void addTypeValue(int type);
+void setSObjName(char **nome);
+/*SELECT---------------Alteraçoes feitas------------------------------------------------*/

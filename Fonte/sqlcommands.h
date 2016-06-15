@@ -15,6 +15,7 @@ int allColumnsExists(rc_insert *, table *);
 char getInsertedType(rc_insert *, char *c, table *);
 char *getInsertedValue(rc_insert *, char *, table *);
 int typesCompatible(char , char);
+
 /*
     Esta função finaliza a inserção de valores em uma tabela. Assume que o usuário entrou com todos
     os campos de uma tupla completa.
@@ -30,12 +31,16 @@ int typesCompatible(char , char);
     *c - Estrutura com o valores que vão ser inseridos na tabela *nome.
 */
 int finalizaInsert(char *, column *);
+
+/*SELECT---------------Alteraçoes feitas------------------------------------------------*/
 /* ----------------------------------------------------------------------------------------------
     Objetivo:   Utilizada para impressão de tabelas.
-    Parametros: Nome da tabela (char).
+    Parametros: Estrutura Select com os dados.
     Retorno:    void.
    ---------------------------------------------------------------------------------------------*/
-void imprime(char [] );
+void imprime(rc_select *);
+/*SELECT---------------Alteraçoes feitas------------------------------------------------*/
+
 /* ----------------------------------------------------------------------------------------------
     Objetivo:   Função para exclusão de tabelas.
     Parametros: Nome da tabela (char).

@@ -49,7 +49,8 @@ int yywrap() {
         CHAR        PRIMARY     KEY         REFERENCES  DATABASE
         DROP        OBJECT      NUMBER      VALUE       QUIT
         LIST_TABLES LIST_TABLE  ALPHANUM    CONNECT     HELP
-        LIST_DBASES CLEAR       CONTR;
+        LIST_DBASES CLEAR       CONTR       OR          AND 
+        WHERE ;
 
 start: insert | select | create_table | create_database | drop_table | drop_database
      | table_attr | list_tables | connection | exit_program | semicolon {GLOBAL_PARSER.consoleFlag = 1; return 0;}
@@ -171,10 +172,47 @@ create_database: CREATE DATABASE {setMode(OP_CREATE_DATABASE);} OBJECT {setObjNa
 /* DROP DATABASE */
 drop_database: DROP DATABASE {setMode(OP_DROP_DATABASE);} OBJECT {setObjName(yytext);} semicolon {return 0;};
 
-/* SELECT */
-select: SELECT {setMode(OP_SELECT_ALL);} '*' FROM table_select semicolon {return 0;};
 
-table_select: OBJECT {setObjName(yytext);};
+
+
+/*SELECT---------------Alteraçoes feitas------------------------------------------------*/
+
+//select: SELECT {setMode(OP_SELECT_ALL); resetSelect();} columns_list FROM tables clause_where semicolon {return 0;};
+select: SELECT {setMode(OP_SELECT_ALL); resetSelect();} columns_list FROM tables clause_where semicolon {return 0;};
+
+tables: OBJECT {setSObjName(yytext);};
+
+
+columns_list: '*' | projection | projection ',' columns_list;
+
+
+projection: OBJECT {setColumnProjection(yytext);};
+
+
+clause_where: /*optional*/ | WHERE {addWhereCondition(); } test tests;
+
+
+tests: /*optional*/ | {addWhereCondition();} logic  test tests;
+
+
+logic: AND {setOpLogic(AND_LOGIC);} | OR {setOpLogic(OR_LOGIC);};
+
+
+test: {setPosition(LEFT);} field_test  condition {setPosition(RIGHT);} field_test;
+
+
+condition: '=' {setCondition(OP_IGUAL);} | '>' {setCondition(OP_MAIOR);}| '<' {setCondition(OP_MENOR);} | '!' {setCondition(OP_DIFERENTE);};
+
+
+field_test: column_test | value_test;
+
+
+column_test: OBJECT {setColumnTest(yytext);};
+
+
+value_test: ALPHANUM {addTypeValue(ALPHANUM_TYPE);addValueTest(*yytext);}|VALUE {addTypeValue(NUMBER_TYPE);addValueTest(*yytext);}|NUMBER{addTypeValue(INT_TYPE);addValueTest(*yytext);};
+
+/*SELECT---------------Alteraçoes feitas------------------------------------------------*/
 
 /* END */
 %%
