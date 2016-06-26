@@ -111,7 +111,7 @@ typedef struct rc_where {       //Estrutura auxiliar ao select, usada para salva
     struct rc_where *pWhere;        //proximo where da lista
     struct rc_where *aWhere;        //where anterior na lista
 }rc_where;
-
+/*
 typedef struct rc_join{     //Estrutura auxiliar par o select fazer join
     char        *table;     //Table que sera feito o join, junto com a tabela definida no select
     int     type;       //Tipo de join (natural ou usando ON)
@@ -119,19 +119,17 @@ typedef struct rc_join{     //Estrutura auxiliar par o select fazer join
     int         OP;         //Operacao que sera feita, teste to entre coluna OP coluna;
     char        *rightColumn;   //Define coluna do lado direito da operacao 
 }rc_join;
-
+*/
 
 typedef struct rc_select{
 
     char    *objName;   //Nome da tabela do select
-
     char    **columnName;   //colunas da tabela para projecao
-
     int         nColumn;        //Numero de colunas para projecao
     rc_where    *where;     //estrutura que guarda os testes logicos
     int     nWhere;     //numero de testes logicos presente no select
-    rc_join *join;      //estrutura que guarda os joins 
-    int     nJoin;      //numero de joins presente no select (sera implementado apenas 1 join, variavel e usada para fazer com n joins)
+    //rc_join *join;      //estrutura que guarda os joins 
+    //int     nJoin;      //numero de joins presente no select (sera implementado apenas 1 join, variavel e usada para fazer com n joins)
 
 }rc_select;
     
