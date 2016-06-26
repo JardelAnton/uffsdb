@@ -915,8 +915,7 @@ int checksWhere(rc_select *select, column *c, int j){
                 }
                 tmp++;x++;
             }
-        }        
-            
+        }                   
     }
     if(select->where->typeLeft == 0){
         if(strcmp(select->where->left, c[j].nomeCampo) == 0){
@@ -1009,7 +1008,6 @@ int checksWhere(rc_select *select, column *c, int j){
                 }
                 return 1;
             }else if (select->where->typeLeft == INT_TYPE && c[j].tipoCampo == 'I'){
-                
                 int_c = (int)c[j].valorCampo[0];
                 int_s = atoi(select->where->left);
                 if(select->where->op == OP_IGUAL){
@@ -1100,7 +1098,7 @@ int checksWhere(rc_select *select, column *c, int j){
                         return 0;
                 }
                 return 1;
-            }else return 1;   
+            }else return 1;               
     }
 
     return 0;

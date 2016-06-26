@@ -26,12 +26,14 @@
  */
 rc_insert GLOBAL_DATA;
 
+//Estrutura global que guarda as informaçoes para realizar o select
 rc_select GLOBAL_SELECT;
 
 int position;
 
 /* Estrutura auxiliar do reconhecedor.
- */
+*/
+
 rc_parser GLOBAL_PARSER;
 
 void connect(char *nome) {
@@ -295,7 +297,7 @@ int interface() {
                 }
             }
 
-            printf("ERROR: syntax error.");
+            printf("ERROR: syntax error.\n");
             GLOBAL_PARSER.noerror = 1;
         }
 
@@ -353,7 +355,6 @@ void setColumnProjection(char **name) {
     GLOBAL_SELECT.nColumn++;
 }
 
-
 void setPosition(int p){    
     if(p == LEFT)
         position = LEFT;
@@ -364,7 +365,6 @@ void setPosition(int p){
 void addWhereCondition(){
     rc_where *w = (rc_where*)malloc(sizeof(rc_where));
     w->pWhere = NULL;
-    w->aWhere = NULL;
     w->typeLogic = 0;
     w->typeLeft = 0;
     w->typeRight = 0;
@@ -396,7 +396,6 @@ void setOpLogic(int logic){
         if(aux->pWhere == NULL)
             aux->typeLogic = logic;
 }
-
 
 void setColumnTest(char **name){
     int i;
@@ -479,6 +478,5 @@ void setSObjName(char **nome) {
         GLOBAL_PARSER.step++;
     }
 }
-
 
 /*Alteraçoes feitas------------------------------------------------*/

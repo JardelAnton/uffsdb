@@ -192,7 +192,7 @@ projection: OBJECT {setColumnProjection(yytext);};
 clause_where: /*optional*/ | WHERE {addWhereCondition(); } test tests;
 
 
-tests: /*optional*/ | {addWhereCondition();} logic  test tests;
+tests: /*optional*/ | {addWhereCondition();} logic  test;
 
 
 logic: AND {setOpLogic(AND_LOGIC);} | OR {setOpLogic(OR_LOGIC);};
