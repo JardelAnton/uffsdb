@@ -49,6 +49,8 @@ help							return HELP;
 [<][=] 							{setCondition(yytext);};
 [>] 							{setCondition(yytext);};
 [<] 							{setCondition(yytext);};
+(?i:AND) 						{setOpLogic(yytext);};
+(?i:OR) 						{setOpLogic(yytext);};
 
 
 

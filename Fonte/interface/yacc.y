@@ -188,13 +188,13 @@ columns_list: '*' | projection | projection ',' columns_list;
 projection: OBJECT {setColumnProjection(yytext);};
 
 
-clause_where: /*optional*/ | WHERE {addWhereCondition(); } tests;
+clause_where: /*optional*   / | WHERE {addWhereCondition(); } tests;
 
 
 tests: test logic;
 
 
-logic: /*optional*/ | {setOpLogic(*yytext);} test;
+logic: /*optional*/ | {} test;
 /* 
 AND {addWhereCondition();} | OR {setOpLogic(OR_LOGIC);addWhereCondition();};*/
 
