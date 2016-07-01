@@ -42,11 +42,15 @@ help							return HELP;
 (?i:CLEAR)						return CLEAR;
 
 
-(?I:WHERE)							return WHERE;
-[=]									return *yytext;
-[!]									return *yytext;
-[<]									return *yytext;
-[>]									return *yytext;
+(?I:WHERE)						return WHERE;
+[=][=] 							{setCondition(yytext);};
+[!][=] 							{setCondition(yytext);};
+[>][=] 							{setCondition(yytext);};
+[<][=] 							{setCondition(yytext);};
+[>] 							{setCondition(yytext);};
+[<] 							{setCondition(yytext);};
+
+
 
 
 [,]								return *yytext;

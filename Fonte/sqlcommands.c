@@ -946,6 +946,14 @@ int checksWhere(rc_select *select, column *c, int j){
                 } else if(select->where->op == OP_MENOR){
                     if(double_c < double_s)
                         return 0;
+                }else if(select->where->op == OP_MENOR_IG){
+
+                    if(double_c <= double_s)
+                        return 0;
+                }else if(select->where->op == OP_MAIOR_IG){
+
+                    if(double_c >= double_s)
+                        return 0;
                 }
                 return 1;
             }else if (select->where->typeRight == INT_TYPE && c[j].tipoCampo == 'I'){
@@ -962,6 +970,14 @@ int checksWhere(rc_select *select, column *c, int j){
                         return 0;
                 } else if(select->where->op == OP_MENOR){
                     if(int_c < int_s)
+                        return 0;
+                } else if(select->where->op == OP_MENOR_IG){
+
+                    if(int_c <= int_s)
+                        return 0;
+                }else if(select->where->op == OP_MAIOR_IG){
+
+                    if(int_c >= int_s)
                         return 0;
                 }
                 return 1;
@@ -1005,6 +1021,14 @@ int checksWhere(rc_select *select, column *c, int j){
 
                     if(double_c < double_s)
                         return 0;
+                }else if(select->where->op == OP_MENOR_IG){
+
+                    if(double_c <= double_s)
+                        return 0;
+                }else if(select->where->op == OP_MAIOR_IG){
+
+                    if(double_c >= double_s)
+                        return 0;
                 }
                 return 1;
             }else if (select->where->typeLeft == INT_TYPE && c[j].tipoCampo == 'I'){
@@ -1028,6 +1052,14 @@ int checksWhere(rc_select *select, column *c, int j){
                 } else if(select->where->op == OP_MENOR){
 
                     if(int_c < int_s)
+                        return 0;
+                } else if(select->where->op == OP_MENOR_IG){
+
+                    if(int_c <= int_s)
+                        return 0;
+                }else if(select->where->op == OP_MAIOR_IG){
+
+                    if(int_c >= int_s)
                         return 0;
                 }
                 return 1;
@@ -1070,7 +1102,16 @@ int checksWhere(rc_select *select, column *c, int j){
 
                     if(double_c < double_s)
                         return 0;
+                }else if(select->where->op == OP_MENOR_IG){
+
+                    if(double_c <= double_s)
+                        return 0;
+                }else if(select->where->op == OP_MAIOR_IG){
+
+                    if(double_c >= double_s)
+                        return 0;
                 }
+
                 return 1;
             }else if (select->where->typeLeft == INT_TYPE){
                 
@@ -1095,6 +1136,14 @@ int checksWhere(rc_select *select, column *c, int j){
                 } else if(select->where->op == OP_MENOR){
 
                     if(int_c < int_s)
+                        return 0;
+                }else if(select->where->op == OP_MENOR_IG){
+
+                    if(int_c <= int_s)
+                        return 0;
+                }else if(select->where->op == OP_MAIOR_IG){
+
+                    if(int_c >= int_s)
                         return 0;
                 }
                 return 1;

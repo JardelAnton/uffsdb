@@ -91,11 +91,13 @@ union c_int{
 #define OP_DIFERENTE    12
 #define OP_MENOR        13
 #define OP_MAIOR        14
-#define ALPHANUM_TYPE   15
-#define NUMBER_TYPE     16
-#define INT_TYPE        17
-#define LEFT            18
-#define RIGHT           19
+#define OP_MENOR_IG     15
+#define OP_MAIOR_IG     16
+#define ALPHANUM_TYPE   17
+#define NUMBER_TYPE     18
+#define INT_TYPE        19
+#define LEFT            20
+#define RIGHT           21
 
 
 typedef struct rc_where {           //Estrutura auxiliar ao select, usada para salvar cada teste do where
@@ -106,6 +108,7 @@ typedef struct rc_where {           //Estrutura auxiliar ao select, usada para s
     char *right;                    //Coluna ou valor do compo de teste do lado esquedo do teste
     int typeRight;                  //Tipo de dados do atributo da direito, se nao for o nome de uma coluna
     struct rc_where *pWhere;        //usando lista simplesmente encadeada para salvar os where;
+    int conc;                       // informa se esse where ja esta concluida
 }rc_where;
 
 typedef struct rc_select{

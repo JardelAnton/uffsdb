@@ -177,10 +177,9 @@ drop_database: DROP DATABASE {setMode(OP_DROP_DATABASE);} OBJECT {setObjName(yyt
 
 /*SELECT---------------Alteraçoes feitas------------------------------------------------*/
 
-//select: SELECT {setMode(OP_SELECT_ALL); resetSelect();} columns_list FROM tables clause_where semicolon {return 0;};
-select: SELECT {setMode(OP_SELECT_ALL); resetSelect();} columns_list FROM tables clause_where semicolon {return 0;};
+select: SELECT {setMode(OP_SELECT_ALL); resetSelect();} columns_list FROM table_select clause_where semicolon {return 0;};
 
-tables: OBJECT {setSObjName(yytext);};
+table_select: OBJECT {setSObjName(yytext);};
 
 
 columns_list: '*' | projection | projection ',' columns_list;
@@ -189,19 +188,22 @@ columns_list: '*' | projection | projection ',' columns_list;
 projection: OBJECT {setColumnProjection(yytext);};
 
 
-clause_where: /*optional*/ | WHERE {addWhereCondition(); } test tests;
+clause_where: /*optional*/ | WHERE {addWhereCondition(); } tests;
 
 
-tests: /*optional*/ | {addWhereCondition();} logic  test;
+tests: test logic;
 
 
-logic: AND {setOpLogic(AND_LOGIC);} | OR {setOpLogic(OR_LOGIC);};
+logic: /*optional*/ | {setOpLogic(*yytext);} test;
+/* 
+AND {addWhereCondition();} | OR {setOpLogic(OR_LOGIC);addWhereCondition();};*/
 
 
 test: {setPosition(LEFT);} field_test  condition {setPosition(RIGHT);} field_test;
 
 
-condition: '=' {setCondition(OP_IGUAL);} | '>' {setCondition(OP_MAIOR);}| '<' {setCondition(OP_MENOR);} | '!' {setCondition(OP_DIFERENTE);};
+condition: {};
+/*'=' {setCondition(OP_IGUAL);} | '>' {setCondition(OP_MAIOR);} | '<' {setCondition(OP_MENOR);} | '!' {setCondition(OP_DIFERENTE);};*/
 
 
 field_test: column_test | value_test;
