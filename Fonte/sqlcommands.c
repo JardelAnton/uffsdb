@@ -885,272 +885,162 @@ void createTable(rc_insert *t) {
 
 
 /*Alteraçoes feitas------------------------------------------------*/
+int checkNumber(double c, double s, int op){
+    if(op == OP_IGUAL){
+        if(c == s) return 0;
+    }
+    else if(op == OP_DIFERENTE){
+        if(c != s) return 0;
+    }
+    else if(op == OP_MAIOR){
+        if(c > s) return 0;
+    }
+    else if(op == OP_MENOR){
+        if(c < s) return 0;
+    }
+    else if(op == OP_MENOR_IG){
+        if(c <= s) return 0;
+    }
+    else if(op == OP_MAIOR_IG){
+        if(c >= s) return 0;
+    }
+    return 1;
+}
+
+int checkInt(int c, int s,int op){
+    if(op == OP_IGUAL){
+        if(c == s) return 0;
+    }
+    else if(op == OP_DIFERENTE){
+        if(c != s) return 0;
+    }
+    else if(op == OP_MAIOR){
+        if(c > s) return 0;
+    }
+    else if(op == OP_MENOR){
+        if(c < s) return 0;
+    }
+    else if(op == OP_MENOR_IG){
+        if(c <= s) return 0;
+    }
+    else if(op == OP_MAIOR_IG){
+        if(c >= s) return 0;
+    }
+    return 1;
+}
+
+int checkAlphaNum(char * c, char * s, int op){
+    if(op == OP_IGUAL){
+        if(strcmp(c,s)==0) return 0;
+    }
+    else if(op == OP_DIFERENTE){
+        if(strcmp(c,s)!=0) return 0;
+    }
+    else if(op == OP_MAIOR){
+        if(strcmp(c,s)> 0) return 0;
+    }
+    else if(op == OP_MENOR){
+        if(strcmp(c,s)< 0) return 0;
+    }
+    else if(op == OP_MENOR_IG){
+        if(strcmp(c,s)<=0) return 0;
+    }
+    else if(op == OP_MAIOR_IG){
+        if(strcmp(c,s)>=0) return 0;  
+    }
+    return 1;
+}
 
 int checksWhere(rc_select *select, column *c, int j){
     int int_c, int_s;
     double double_c, double_s;
     int tmp,x;
-    if(select->where->typeLeft == 0 && select->where->typeRight == 0){
-
-        if(strcmp(select->where->left, c[j].nomeCampo) == 0 ){ 
-            tmp=j;x=1;
-            while(x!=15){
-                if(strcmp(c[tmp].nomeCampo,select->where->right)==0){              
-                    if((int)(c[tmp].valorCampo[0])!=(int)(c[j].valorCampo[0])) return 0;
+    if(select->typeLogic == 0){
+        if(select->where->typeLeft == 0 && select->where->typeRight == 0){
+            printf("0-0\n");
+            if(strcmp(select->where->left, c[j].nomeCampo) == 0 ){ 
+                printf("caraleo\n");
+                tmp=j;x=1;
+                while(x!=15){
+                     if(c[tmp].nomeCampo!=NULL){
+                    if(strcmp(c[tmp].nomeCampo,select->where->right)==0){              
+                        if((int)(c[tmp].valorCampo[0])!=(int)(c[j].valorCampo[0])) return 0;
+                    }
+                    if(tmp==7){
+                        x=15;
+                    }
+                    tmp++;//x++;
                 }
-                if(tmp==15){
-                    x=25;
                 }
-                tmp++;x++;
+            }
+            if(strcmp(select->where->right, c[j].nomeCampo) == 0){ 
+                tmp=j;x=1;
+                while(x!=15){
+                    if(c[tmp].nomeCampo!=NULL){
+                    if(strcmp(c[tmp].nomeCampo,select->where->left)==0){              
+                        if((int)(c[tmp].valorCampo[0])!=(int)(c[j].valorCampo[0])) return 0;
+                    }
+                    if(tmp==15){
+                        x=25;
+                    }
+                    tmp++;x++;
+                }
+                }
+            }                   
+        }
+        if(select->where->typeLeft == 0){
+            printf("0-1\n");
+            if(strcmp(select->where->left, c[j].nomeCampo) == 0){
+                if(select->where->typeRight == ALPHANUM_TYPE && (c[j].tipoCampo == 'C' || c[j].tipoCampo == 'S')){
+                    return checkAlphaNum(c[j].valorCampo,select->where->right,select->where->op);
+                }else if((select->where->typeRight == NUMBER_TYPE && c[j].tipoCampo == 'D') ){
+                    double_c = (double)c[j].valorCampo[0];
+                    double_s = atof(select->where->right); 
+                    return checkNumber(double_c, double_s,select->where->op);  
+                }else if (select->where->typeRight == INT_TYPE && c[j].tipoCampo == 'I'){
+                    int_c = (int)c[j].valorCampo[0];
+                    int_s = atoi(select->where->right);                
+                    return checkInt(int_c, int_s,select->where->op);
+                }else return 1;            
+            }
+        }      
+        if(select->where->typeRight == 0){
+            printf("1-0\n");
+            if(strcmp(select->where->right, c[j].nomeCampo) == 0){
+                if(select->where->typeLeft == ALPHANUM_TYPE && (c[j].tipoCampo == 'C' || c[j].tipoCampo == 'S')){
+                    return checkAlphaNum(select->where->left,c[j].valorCampo,select->where->op);
+                }else if((select->where->typeLeft == NUMBER_TYPE && c[j].tipoCampo == 'D') ){
+                    double_c = (double)c[j].valorCampo[0];
+                    double_s = atof(select->where->left);
+                    return checkNumber(double_c,double_s, select->where->op);
+                }else if (select->where->typeLeft == INT_TYPE && c[j].tipoCampo == 'I'){
+                    int_c = (int)c[j].valorCampo[0];
+                    int_s = atoi(select->where->left);
+                    return checkInt(int_c,int_s, select->where->op);
+                }else return 1;            
             }
         }
-        if(strcmp(select->where->right, c[j].nomeCampo) == 0){ 
-            tmp=j;x=1;
-            while(x!=15){
-                if(strcmp(c[tmp].nomeCampo,select->where->left)==0){              
-                    if((int)(c[tmp].valorCampo[0])!=(int)(c[j].valorCampo[0])) return 0;
-                }
-                if(tmp==15){
-                    x=0;
-                }
-                tmp++;x++;
-            }
-        }                   
-    }
-    if(select->where->typeLeft == 0){
-        if(strcmp(select->where->left, c[j].nomeCampo) == 0){
-            if(select->where->typeRight == ALPHANUM_TYPE && (c[j].tipoCampo == 'C' || c[j].tipoCampo == 'S')){
-                if(select->where->op == OP_IGUAL){
-                    if(strcmp( select->where->right, c[j].valorCampo)==0)
-                        return 0;
-                    else
-                        return 1;
-                }else if(select->where->op == OP_DIFERENTE){
-                    if(!strcmp(c->valorCampo, select->where->right))
-                        return 1;
-                    else
-                        return 0;
-                }
-            }else if((select->where->typeRight == NUMBER_TYPE && c[j].tipoCampo == 'D') ){
-                double_c = (double)c[j].valorCampo[0];
-                double_s = atof(select->where->right);                
-                if(select->where->op == OP_IGUAL){
-                    if(double_c == double_s)
-                        return 0;
-                }else if(select->where->op == OP_DIFERENTE){
-                    if(double_c != double_s)
-                        return 0;
-                }else if(select->where->op == OP_MAIOR){
-                    if(double_c > double_s)
-                        return 0;
-                } else if(select->where->op == OP_MENOR){
-                    if(double_c < double_s)
-                        return 0;
-                }else if(select->where->op == OP_MENOR_IG){
-
-                    if(double_c <= double_s)
-                        return 0;
-                }else if(select->where->op == OP_MAIOR_IG){
-
-                    if(double_c >= double_s)
-                        return 0;
-                }
-                return 1;
-            }else if (select->where->typeRight == INT_TYPE && c[j].tipoCampo == 'I'){
-                int_c = (int)c[j].valorCampo[0];
-                int_s = atoi(select->where->right);                
-                if(select->where->op == OP_IGUAL){
-                    if(int_c == int_s)
-                        return 0;
-                }else if(select->where->op == OP_DIFERENTE){
-                    if(int_c != int_s)
-                        return 0;
-                }else if(select->where->op == OP_MAIOR){
-                    if(int_c > int_s)
-                        return 0;
-                } else if(select->where->op == OP_MENOR){
-                    if(int_c < int_s)
-                        return 0;
-                } else if(select->where->op == OP_MENOR_IG){
-
-                    if(int_c <= int_s)
-                        return 0;
-                }else if(select->where->op == OP_MAIOR_IG){
-
-                    if(int_c >= int_s)
-                        return 0;
-                }
-                return 1;
-            }else return 1;            
+        else if(select->where->typeLeft != 0 && select->where->typeRight != 0){
+            printf("1-1\n");
+                if(select->where->typeLeft == ALPHANUM_TYPE){
+                    return checkAlphaNum(select->where->left,select->where->right,select->where->op);
+                }else if(select->where->typeLeft == NUMBER_TYPE){
+                    double_c = atof(select->where->right);
+                    double_s = atof(select->where->left);
+                    return checkNumber(double_c,double_s, select->where->op);
+                }else if (select->where->typeLeft == INT_TYPE){                
+                    int_c = atoi(select->where->right);
+                    int_s = atoi(select->where->left);
+                    return checkInt(int_c,int_s, select->where->op);
+                }else return 1;               
         }
-    }      
-    if(select->where->typeRight == 0){
-        if(strcmp(select->where->right, c[j].nomeCampo) == 0){
-            if(select->where->typeLeft == ALPHANUM_TYPE && (c[j].tipoCampo == 'C' || c[j].tipoCampo == 'S')){
-                if(select->where->op == OP_IGUAL){
-                    if(strcmp( select->where->left, c[j].valorCampo)==0)
-                        return 0;
-                    else
-                        return 1;
-                }else if(select->where->op == OP_DIFERENTE){
-                    if(!strcmp(c->valorCampo, select->where->left))
-                        return 1;
-                    else
-                        return 0;
-                }
-            }else if((select->where->typeLeft == NUMBER_TYPE && c[j].tipoCampo == 'D') ){
-                double_c = (double)c[j].valorCampo[0];
-                double_s = atof(select->where->left);
-                
-                if(select->where->op == OP_IGUAL){
+        return 0;
+    }else if(select->typeLogic == AND){
+        
 
-                    if(double_c == double_s)
-                        return 0;
+    }else if(select->typeLogic == OR){
 
-                }else if(select->where->op == OP_DIFERENTE){
-
-                    if(double_c != double_s)
-                        return 0;
-
-                }else if(select->where->op == OP_MAIOR){
-
-                    if(double_c > double_s)
-                        return 0;
-
-                } else if(select->where->op == OP_MENOR){
-
-                    if(double_c < double_s)
-                        return 0;
-                }else if(select->where->op == OP_MENOR_IG){
-
-                    if(double_c <= double_s)
-                        return 0;
-                }else if(select->where->op == OP_MAIOR_IG){
-
-                    if(double_c >= double_s)
-                        return 0;
-                }
-                return 1;
-            }else if (select->where->typeLeft == INT_TYPE && c[j].tipoCampo == 'I'){
-                int_c = (int)c[j].valorCampo[0];
-                int_s = atoi(select->where->left);
-                if(select->where->op == OP_IGUAL){
-
-                    if(int_c == int_s)
-                        return 0;
-
-                }else if(select->where->op == OP_DIFERENTE){
-
-                    if(int_c != int_s)
-                        return 0;
-
-                }else if(select->where->op == OP_MAIOR){
-
-                    if(int_c > int_s)
-                        return 0;
-
-                } else if(select->where->op == OP_MENOR){
-
-                    if(int_c < int_s)
-                        return 0;
-                } else if(select->where->op == OP_MENOR_IG){
-
-                    if(int_c <= int_s)
-                        return 0;
-                }else if(select->where->op == OP_MAIOR_IG){
-
-                    if(int_c >= int_s)
-                        return 0;
-                }
-                return 1;
-            }else return 1;            
-        }
     }
-    else if(select->where->typeLeft != 0 && select->where->typeRight != 0){
-            if(select->where->typeLeft == ALPHANUM_TYPE){
-                if(select->where->op == OP_IGUAL){
-                    if(strcmp( select->where->left,select->where->right)==0)
-                        return 0;
-                    else
-                        return 1;
-                }else if(select->where->op == OP_DIFERENTE){
-                    if(!strcmp(select->where->right, select->where->left))
-                        return 1;
-                    else
-                        return 0;
-                }
-            }else if(select->where->typeLeft == NUMBER_TYPE){
-                double_c = atof(select->where->right);
-                double_s = atof(select->where->left);
-                
-                if(select->where->op == OP_IGUAL){
-
-                    if(double_c == double_s)
-                        return 0;
-
-                }else if(select->where->op == OP_DIFERENTE){
-
-                    if(double_c != double_s)
-                        return 0;
-
-                }else if(select->where->op == OP_MAIOR){
-
-                    if(double_c > double_s)
-                        return 0;
-
-                } else if(select->where->op == OP_MENOR){
-
-                    if(double_c < double_s)
-                        return 0;
-                }else if(select->where->op == OP_MENOR_IG){
-
-                    if(double_c <= double_s)
-                        return 0;
-                }else if(select->where->op == OP_MAIOR_IG){
-
-                    if(double_c >= double_s)
-                        return 0;
-                }
-
-                return 1;
-            }else if (select->where->typeLeft == INT_TYPE){
-                
-                int_c = atoi(select->where->right);
-                int_s = atoi(select->where->left);
-                
-                if(select->where->op == OP_IGUAL){
-
-                    if(int_c == int_s)
-                        return 0;
-
-                }else if(select->where->op == OP_DIFERENTE){
-
-                    if(int_c != int_s)
-                        return 0;
-
-                }else if(select->where->op == OP_MAIOR){
-
-                    if(int_c > int_s)
-                        return 0;
-
-                } else if(select->where->op == OP_MENOR){
-
-                    if(int_c < int_s)
-                        return 0;
-                }else if(select->where->op == OP_MENOR_IG){
-
-                    if(int_c <= int_s)
-                        return 0;
-                }else if(select->where->op == OP_MAIOR_IG){
-
-                    if(int_c >= int_s)
-                        return 0;
-                }
-                return 1;
-            }else return 1;               
-    }
-
-    return 0;
 }
 
 void imprime(rc_select *DATA_SELECT) {
@@ -1227,7 +1117,7 @@ void imprime(rc_select *DATA_SELECT) {
 
             for(k = 0; k < bufferpoll[p].nrec; k++){
                 if(DATA_SELECT->where != NULL){
-                    for(j=0; j < objeto.qtdCampos && ok_where_checked != 1 ; j++){
+                    for(j=0; j < objeto.qtdCampos && ok_where_checked == 0 ; j++){
                         ok_where_checked = checksWhere(DATA_SELECT, pagina, j + aux);
                     }
                 }
@@ -1264,9 +1154,6 @@ void imprime(rc_select *DATA_SELECT) {
         ntuples = --x;
         p = 0;
         while(x){
-            //aqui deve ser carregado as tuplas com as clasulas do where passar o rc select pra carregar a pagina
-            //creio que seja a melhor forma pois ai só tera as tuplas das projeções e não precisa mexer drasticamente a função imprime, 
-            //pois para baixo é apenas printfs
             column *pagina = getPage(bufferpoll, esquema, objeto, p);
 
             if(pagina == ERRO_PARAMETRO){
