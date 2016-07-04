@@ -326,7 +326,6 @@ void yyerror(char *s, ...) {
 /*Alteraçoes feitas------------------------------------------------*/
 
 void resetSelect(){
-    printf("1-ResetSelect\n");
     free(GLOBAL_SELECT.objName);
     GLOBAL_SELECT.objName = NULL;
     free(GLOBAL_SELECT.columnName);
@@ -338,7 +337,6 @@ void resetSelect(){
 }
 
 void setObjNameSelect(char **name) {
-    printf("2-setObjNameSelect\n");
     if (GLOBAL_PARSER.mode != 0) {
         GLOBAL_SELECT.objName = malloc(sizeof(char)*((strlen(*name)+1)));
         strcpylower(GLOBAL_SELECT.objName, *name);
@@ -349,7 +347,7 @@ void setObjNameSelect(char **name) {
     }    
 }
 
-void setColumnProjection(char **name) {printf("3-setColumnProjection\n");
+void setColumnProjection(char **name) {
     GLOBAL_SELECT.columnName = realloc(GLOBAL_SELECT.columnName, (GLOBAL_SELECT.nColumn + 1)*sizeof(char *));
     GLOBAL_SELECT.columnName[GLOBAL_SELECT.nColumn] = malloc(sizeof(char)*(strlen(*name) + 1));
     strcpylower(GLOBAL_SELECT.columnName[GLOBAL_SELECT.nColumn], *name);
@@ -357,14 +355,14 @@ void setColumnProjection(char **name) {printf("3-setColumnProjection\n");
     GLOBAL_SELECT.nColumn++;
 }
 
-void setPosition(int p){    printf("4-setPosition\t%d\n",p);
+void setPosition(int p){
     if(p == LEFT)
         position = LEFT;
     else 
         position = RIGHT;
 }
 
-void addWhereCondition(){printf("5-addWhereCondition\n");
+void addWhereCondition(){
     rc_where *w = (rc_where*)malloc(sizeof(rc_where));
     w->pWhere = NULL;
     w->typeLogic = 0;
@@ -383,18 +381,7 @@ void addWhereCondition(){printf("5-addWhereCondition\n");
     GLOBAL_SELECT.nWhere++;
 }
 
-/*
-void setCondition(int OP){printf("6-setCondition\n");
-    int i;
-    rc_where *aux = GLOBAL_SELECT.where;
-    for(i = 0 ; i < GLOBAL_SELECT.nWhere; i++){
-        if(aux->pWhere == NULL){
-            aux->op = OP;
-        }
-    }
-}//*/
-
-void setCondition(char * OP){printf("6-setCondition %s \n",OP);
+void setCondition(char * OP){
     int i;
     rc_where *aux = GLOBAL_SELECT.where;
     for(i = 0 ; i < GLOBAL_SELECT.nWhere; i++){
@@ -414,101 +401,83 @@ void setCondition(char * OP){printf("6-setCondition %s \n",OP);
             }
             //aux->op = OP;
         }
-    }
-}//*/
-/*
-void setCondition(int OP){printf("6-setCondition\n");
-    int i;
-    rc_where *aux = GLOBAL_SELECT.where;
-    for(i = 0 ; i < GLOBAL_SELECT.nWhere; i++){
-        if(aux->pWhere == NULL)
-            aux->op = OP;
-        //else aux=aux->pWhere;   
-    }
-}
-*/
-void setOpLogic(char *logic){printf("7-setOpLogic\n");
-    int i;
-    rc_where *aux = GLOBAL_SELECT.where;
-    for(i = 0 ; i < GLOBAL_SELECT.nWhere; i++){
-        if(aux->pWhere == NULL){
-            if(strcmp(logic,"AND")==0){
-                aux->typeLogic=AND_LOGIC;    
-            }else if(strcmp(logic,"OR")==0){
-                aux->typeLogic=OR_LOGIC;
-            }
-            //aux->typeLogic = logic;
-        }
+        else aux=aux->pWhere;
     }
 }
 
-void setColumnTest(char **name){printf("8-setColumnTest\t%s\n",*name);
+void setOpLogic(char *logic){
+    int i;
+    strcpylower(logic,logic);
+    rc_where *aux = GLOBAL_SELECT.where;
+    for(i = 0 ; i < GLOBAL_SELECT.nWhere; i++){
+        if(aux->pWhere  == NULL){
+            if(strcmp(logic,"and")==0 )
+                aux->typeLogic=AND_LOGIC;    
+            else if(strcmp(logic,"or")==0)
+                aux->typeLogic=OR_LOGIC;
+        }else    
+            aux=aux->pWhere;
+    }
+    addWhereCondition();
+}
+
+void setColumnTest(char **name){
     int i;
     rc_where *aux = GLOBAL_SELECT.where;
     for(i = 0 ; i < GLOBAL_SELECT.nWhere; i++){
-        printf("aqui\n");
         if(aux->pWhere == NULL){
-            printf("aqui2\n");
             if(position == LEFT){
-                GLOBAL_SELECT.where->left = malloc(sizeof(char)*(strlen(*name) + 1));
-                strcpylower(GLOBAL_SELECT.where->left, *name);
-                    GLOBAL_SELECT.where->left += '\0';
+                aux->left = malloc(sizeof(char)*(strlen(*name) + 1));
+                strcpylower(aux->left, *name);
+                    aux->left += '\0';
             }else{
-                GLOBAL_SELECT.where->right = malloc(sizeof(char)*(strlen(*name) + 1));
-                strcpylower(GLOBAL_SELECT.where->right, *name);
-                GLOBAL_SELECT.where->right += '\0';
+                aux->right = malloc(sizeof(char)*(strlen(*name) + 1));
+                strcpylower(aux->right, *name);
+                aux->right += '\0';
             }
         }else{
-            printf("aqui3\n");
             aux=aux->pWhere;
         }
     }
 }
 
-void addValueTest(char *value){printf("9-addValueTest\n");
+void addValueTest(char *value){
     int i, j;
     rc_where *aux = GLOBAL_SELECT.where;
     for(i = 0 ; i < GLOBAL_SELECT.nWhere; i++){
         if(aux->pWhere == NULL){    
             if(position == LEFT){
-                GLOBAL_SELECT.where->left = malloc(sizeof(char)*(strlen(value) + 1));               
+                aux->left = malloc(sizeof(char)*(strlen(value) + 1));               
                 if(aux->typeLeft == INT_TYPE || aux->typeLeft ==  NUMBER_TYPE){                 
-                    strcpylower(GLOBAL_SELECT.where->left, value);
-                    GLOBAL_SELECT.where->left += '\0';                    
+                    strcpylower(aux->left, value);
+                    aux->left += '\0';                    
                 }else{
                     for (j = 1; j < strlen(value)-1; j++) {
-                        GLOBAL_SELECT.where->left[j-1] = value[j];
+                        aux->left[j-1] = value[j];
                     }
-                    GLOBAL_SELECT.where->left[strlen(value)-2] = '\0';
+                    aux->left[strlen(value)-2] = '\0';
                 }
             }else{
-                GLOBAL_SELECT.where->right = malloc(sizeof(char)*(strlen(value) + 1));
+                aux->right = malloc(sizeof(char)*(strlen(value) + 1));
                 if(aux->typeRight == INT_TYPE || aux->typeRight ==  NUMBER_TYPE){                   
-                    strcpylower(GLOBAL_SELECT.where->right, value);
-                    GLOBAL_SELECT.where->right += '\0';                    
+                    strcpylower(aux->right, value);
+                    aux->right += '\0';                    
                 }else{
                     for (j = 1; j < strlen(value)-1; j++) {
-                        GLOBAL_SELECT.where->right[j-1] = value[j];
+                        aux->right[j-1] = value[j];
                     }
-                    GLOBAL_SELECT.where->right[strlen(value)-2] = '\0';
+                    aux->right[strlen(value)-2] = '\0';
                 }   
             }
-        }//else{aux=aux->pWhere;}
+        }else{aux=aux->pWhere;}
     }
 }
 
-void addTypeValue(int type){printf("10-addTypeValue\n");
+void addTypeValue(int type){
     int i;
     rc_where *aux = GLOBAL_SELECT.where;    
-    if(GLOBAL_SELECT.where == NULL){
+    if( aux == NULL){
         return;
-    }
-
-    if(GLOBAL_SELECT.where->pWhere == NULL){
-            if(position == LEFT)
-                GLOBAL_SELECT.where->typeLeft = type;                
-            else
-                GLOBAL_SELECT.where->typeRight = type;
     }
     for(i = 0 ; i <= GLOBAL_SELECT.nWhere; i++){
         if(aux->pWhere == NULL){
@@ -516,11 +485,12 @@ void addTypeValue(int type){printf("10-addTypeValue\n");
                 aux->typeLeft = type;
             else
                 aux->typeRight = type;
-        }
+        }else
+        aux=aux->pWhere;
     }   
 }           
 
-void setSObjName(char **nome) {printf("11-setSObjName\n");
+void setSObjName(char **nome) {
     if (GLOBAL_PARSER.mode != 0) {
         GLOBAL_SELECT.objName = malloc(sizeof(char)*((strlen(*nome)+1)));
         strcpylower(GLOBAL_SELECT.objName, *nome);
