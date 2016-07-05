@@ -12,7 +12,14 @@ A simple teaching DBMS
  In the `interface` folder type `make` to compile both.
  You can edit the following files: `parser.h`, `parser.c`, `lex.l`, and `yacc.y`.
 
-
+# WHERE sintax
+ (...) WHERE cidade == 'Palmitos';
+ (...) WHERE cidade != 'Palmitos';
+ (...) WHERE idade > 38;
+ (...) WHERE idade < 38;
+ (...) WHERE idade >= 38;
+ (...) WHERE idade <= 38;
+ 
 # Group B
-Andrei da Cunha Toledo 			-1011100003
-Jardel Anton 					-1311100022
+ Andrei da Cunha Toledo 			-1011100003
+ Jardel Anton 					-1311100022
