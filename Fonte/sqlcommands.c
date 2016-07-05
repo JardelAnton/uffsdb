@@ -953,40 +953,29 @@ int checkAlphaNum(char * c, char * s, int op){
 }
 
 int checksWhere(rc_where *select, column *c, int j){
-    int int_c, int_s;
+    int int_c, int_s, p=0;
     double double_c, double_s;
-    int tmp,x;
-    if(select->typeLeft == 0 && select->typeRight == 0){
-        if(strcmp(select->left, c[j].nomeCampo) == 0 ){                     
-            tmp=j;x=1;
-            while(x!=15){
-                 if(c[tmp].nomeCampo!=NULL){
-                if(strcmp(c[tmp].nomeCampo,select->right)==0){              
-                    if((int)(c[tmp].valorCampo[0])!=(int)(c[j].valorCampo[0])) return 0;
+    if(select->typeLeft == 0 && select->typeRight == 0){// ambos sao atributos da tabela
+        if(strcmp(select->left, c[j].nomeCampo) == 0 ){ 
+            for(p=0;p<j;p++){
+                if(strcmp(select->right,c[p+j].nomeCampo)==0){                        
+                    if(c[j].tipoCampo==c[p].tipoCampo){
+                        if(c[j].tipoCampo=='C'){
+                            return checkAlphaNum(c[j].valorCampo,c[p+j].valorCampo,select->op);
+                        }else if(c[j].tipoCampo == 'D'){
+                            double_c = (double)c[j].valorCampo[0];
+                            double_s = (double)c[p+j].valorCampo[0]; 
+                            return checkNumber(double_c, double_s,select->op);  
+                        }else if (c[j].tipoCampo == 'I'){                            
+                            int_c = (int)c[j].valorCampo[0];
+                            int_s = (int)c[p+j].valorCampo[0];  
+                            return checkInt(int_c, int_s,select->op);
+                        }
+                    }
                 }
-                if(tmp==15){
-                    x=15;
-                }
-                tmp++;//x++;
             }
-            }
-        }
-        if(strcmp(select->right, c[j].nomeCampo) == 0){ 
-            tmp=j;x=1;
-            while(x!=15){
-                if(c[tmp].nomeCampo!=NULL){
-                if(strcmp(c[tmp].nomeCampo,select->left)==0){              
-                    if((int)(c[tmp].valorCampo[0])!=(int)(c[j].valorCampo[0])) return 0;
-                }
-                if(tmp==15){
-                    x=25;
-                }
-                tmp++;x++;
-            }
-            }
-        }                   
-    }
-    if(select->typeLeft == 0){
+        }return 0;
+    }else if(select->typeLeft == 0){ // somente o item a esquerda e´ um atributo
         if(strcmp(select->left, c[j].nomeCampo) == 0){
             if(select->typeRight == ALPHANUM_TYPE && (c[j].tipoCampo == 'C' || c[j].tipoCampo == 'S')){
                 return checkAlphaNum(c[j].valorCampo,select->right,select->op);
@@ -1000,9 +989,8 @@ int checksWhere(rc_where *select, column *c, int j){
                 return checkInt(int_c, int_s,select->op);
             }else return 1;            
         }
-    }      
-    if(select->typeRight == 0){
-        if(strcmp(select->right, c[j].nomeCampo) == 0){
+    }else if(select->typeRight == 0){ // somente o item a direita e´ um atributo
+        if(strcmp(select->right, c[j].nomeCampo) == 0) {
             if(select->typeLeft == ALPHANUM_TYPE && (c[j].tipoCampo == 'C' || c[j].tipoCampo == 'S')){
                 return checkAlphaNum(select->left,c[j].valorCampo,select->op);
             }else if((select->typeLeft == NUMBER_TYPE && c[j].tipoCampo == 'D') ){
@@ -1015,25 +1003,21 @@ int checksWhere(rc_where *select, column *c, int j){
                 return checkInt(int_c,int_s, select->op);
             }else return 1;            
         }
-    }
-    else if(select->typeLeft != 0 && select->typeRight != 0){
-            if(select->typeLeft == ALPHANUM_TYPE){
-                return checkAlphaNum(select->left,select->right,select->op);
-            }else if(select->typeLeft == NUMBER_TYPE){
-                double_c = atof(select->right);
-                double_s = atof(select->left);
-                return checkNumber(double_c,double_s, select->op);
-            }else if (select->typeLeft == INT_TYPE){                
-                int_c = atoi(select->right);
-                int_s = atoi(select->left);
-                return checkInt(int_c,int_s, select->op);
-            }else return 1;               
+    }else if(select->typeLeft != 0 && select->typeRight != 0){ // os dois itens nao s~ao atributos de tabela
+        if(select->typeLeft == ALPHANUM_TYPE){
+            return checkAlphaNum(select->left,select->right,select->op);
+        }else if(select->typeLeft == NUMBER_TYPE){
+            double_c = atof(select->right);
+            double_s = atof(select->left);
+            return checkNumber(double_c,double_s, select->op);
+        }else if (select->typeLeft == INT_TYPE){                
+            int_c = atoi(select->right);
+            int_s = atoi(select->left);
+            return checkInt(int_c,int_s, select->op);
+        }else return 1;               
     }
     return 0;
 }
-
-
-
 
 void imprime(rc_select *DATA_SELECT) {
     int j, k, erro, x, p, cont=0, aux, ok_where_checked,ok_where_checked1;
@@ -1111,7 +1095,7 @@ void imprime(rc_select *DATA_SELECT) {
             for(k = 0; k < bufferpoll[p].nrec; k++){
                 if(DATA_SELECT->where != NULL){
                     ok_where_checked1=0;
-                    for(j=0; j < objeto.qtdCampos && ok_where_checked == 0 ; j++){
+                    for(j=0; j < objeto.qtdCampos && ok_where_checked == 0 ; j++){                       
                         ok_where_checked = checksWhere(DATA_SELECT->where, pagina, j + aux);
                     }
                     if(DATA_SELECT->where->typeLogic==AND_LOGIC){
@@ -1267,5 +1251,6 @@ void imprime(rc_select *DATA_SELECT) {
     free(esquema);
     
 }
+
 /*Alteraçoes feitas------------------------------------------------*/
 
